@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Aura Ledger | Next-Gen Financial Rails</title>
+  <meta name="description" content="Institutional infrastructure for real-time asset settlement, counterparty elimination, and programmable capital efficiency." />
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              dark: '#05070a',
+              card: '#0c1017',
+              border: '#1b2432',
+              accent: '#38bdf8',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              coindcx: '#0052fe'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom utility & mobile polish */
+    body {
+      background-color: #05070a;
+      color: #f1f5f9;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .glass-nav {
+      background: rgba(5, 7, 10, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .glass-card {
+      background: rgba(12, 16, 23, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid #1b2432;
+    }
+    input[type=range] {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #1b2432;
+      height: 6px;
+      border-radius: 4px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #38bdf8;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+    }
+  </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- ==================== NAVIGATION BAR ==================== -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-bold text-base shadow-sm shadow-sky-500/30">
+          <i class="fa-solid fa-cube"></i>
+        </div>
+        <span class="font-bold text-lg tracking-tight text-white">AURA<span class="text-sky-400 font-semibold text-sm ml-1">LEDGER</span></span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+        <a href="#principles" class="hover:text-sky-400 transition-colors">Core Pillars</a>
+        <a href="#matrix" class="hover:text-sky-400 transition-colors">Clearing Matrix</a>
+        <a href="#calculator" class="hover:text-sky-400 transition-colors">Friction Calculator</a>
+        <a href="#faq" class="hover:text-sky-400 transition-colors">Due Diligence</a>
+      </nav>
+
+      <!-- Action & Connect Wallet -->
+      <div class="flex items-center space-x-3">
+        <button id="connectWalletBtn" onclick="openWalletModal()" class="flex items-center space-x-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-semibold px-4 py-2 rounded-lg text-xs md:text-sm transition-all shadow-md shadow-sky-500/20 active:scale-95">
+          <i class="fa-solid fa-wallet"></i>
+          <span id="walletBtnText">Connect Wallet</span>
+        </button>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="md:hidden text-slate-300 hover:text-white p-2 rounded-lg border border-brand-border focus:outline-none" aria-label="Open Navigation Menu">
+          <i id="menuIcon" class="fa-solid fa-bars text-lg"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobileDrawer" class="hidden md:hidden border-b border-brand-border bg-brand-dark/95 backdrop-blur-xl px-4 pt-3 pb-5 space-y-3">
+      <a href="#principles" onclick="toggleMobileMenu()" class="block py-2 text-sm text-slate-300 hover:text-sky-400 font-medium border-b border-brand-border/40">Core Pillars</a>
+      <a href="#matrix" onclick="toggleMobileMenu()" class="block py-2 text-sm text-slate-300 hover:text-sky-400 font-medium border-b border-brand-border/40">Clearing Matrix</a>
+      <a href="#calculator" onclick="toggleMobileMenu()" class="block py-2 text-sm text-slate-300 hover:text-sky-400 font-medium border-b border-brand-border/40">Friction Calculator</a>
+      <a href="#faq" onclick="toggleMobileMenu()" class="block py-2 text-sm text-slate-300 hover:text-sky-400 font-medium">Due Diligence FAQ</a>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main class="flex-grow pt-20">
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section class="relative px-4 sm:px-6 lg:px-8 py-12 md:py-20 max-w-7xl mx-auto flex flex-col items-center text-center">
+      
+      <!-- Institutional Pill Badge -->
+      <div class="inline-flex items-center space-x-2 bg-sky-500/10 border border-sky-500/20 rounded-full px-3 py-1.5 mb-6 text-xs text-sky-400 font-medium tracking-wide">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Next-Generation Financial Infrastructure</span>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight max-w-4xl">
+        Eliminate T+2 Clearing Latency with <span class="text-transparent bg-clip-text bg-gradient-to-r from-sky-400 via-indigo-300 to-emerald-400">Atomic Gross Settlement</span>
+      </h1>
+
+      <!-- Subtitle for Non-Technical Finance -->
+      <p class="mt-5 text-sm sm:text-base md:text-lg text-slate-400 max-w-2xl leading-relaxed">
+        Transition corporate capital rails from vulnerable correspondent intermediaries to decentralized, cryptographically verified ledger contracts.
+      </p>
+
+      <!-- CTAs -->
+      <div class="mt-8 flex flex-col sm:flex-row items-center gap-3.5 w-full sm:w-auto">
+        <a href="#calculator" class="w-full sm:w-auto px-6 py-3 rounded-lg bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold text-sm text-center shadow-lg shadow-sky-500/20 transition-all">
+          Calculate Capital Savings
+        </a>
+        <a href="#matrix" class="w-full sm:w-auto px-6 py-3 rounded-lg border border-brand-border hover:border-slate-600 bg-brand-card text-slate-300 hover:text-white font-medium text-sm text-center transition-all">
+          Compare Traditional vs Web3
+        </a>
+      </div>
+
+      <!-- Interactive Liquidity Mesh Canvas -->
+      <div class="w-full mt-10 p-2 sm:p-4 rounded-xl border border-brand-border bg-brand-card/40 relative overflow-hidden">
+        <div class="flex items-center justify-between px-2 mb-2">
+          <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-nodes text-sky-400"></i> Peer-to-Peer Clearing Mesh Simulation
+          </span>
+          <span class="text-[11px] text-slate-400">Tap mesh to settle atomic block</span>
+        </div>
+        <canvas id="meshCanvas" class="w-full h-48 sm:h-64 rounded-lg bg-brand-dark cursor-crosshair"></canvas>
+      </div>
+    </section>
+
+    <!-- ==================== CORE PILLARS SECTION ==================== -->
+    <section id="principles" class="px-4 sm:px-6 lg:px-8 py-12 max-w-7xl mx-auto border-t border-brand-border/60">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Institutional Web3 Pillars</h2>
+        <p class="text-xs sm:text-sm text-slate-400 mt-2">Deconstruct blockchain utility using straightforward, non-technical financial frameworks.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        
+        <!-- Pillar 1 -->
+        <div class="glass-card p-6 rounded-xl relative overflow-hidden group hover:border-sky-500/50 transition-all">
+          <div class="w-10 h-10 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Instant Atomic Settlement (T+0)</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Eliminates traditional 48-hour settlement delays (T+2). Delivery-versus-Payment (DvP) occurs synchronously, freeing locked collateral and eliminating principal default risk.
+          </p>
+        </div>
+
+        <!-- Pillar 2 -->
+        <div class="glass-card p-6 rounded-xl relative overflow-hidden group hover:border-sky-500/50 transition-all">
+          <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-file-contract"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Self-Executing Algorithmic Escrow</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Smart contracts act as automated escrow agents. Transaction payments disburse automatically and irreversibly the exact moment compliance and delivery criteria are met.
+          </p>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="glass-card p-6 rounded-xl relative overflow-hidden group hover:border-indigo-500/50 transition-all">
+          <div class="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-building-columns"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Real-World Asset (RWA) Tokenization</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Convert traditionally illiquid assets—like commercial paper, sovereign treasury bills, and real estate—into divisible digital units with 24/7/365 liquidity.
+          </p>
+        </div>
+
+        <!-- Pillar 4 -->
+        <div class="glass-card p-6 rounded-xl relative overflow-hidden group hover:border-amber-500/50 transition-all">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg mb-4">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Zero Counterparty Risk</h3>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Replace opaque banking routing chains with transparent cryptographic verifications. Your balance sheet retains direct, unseizable custody of reserve assets.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== CLEARING MATRIX COMPARISON ==================== -->
+    <section id="matrix" class="px-4 sm:px-6 lg:px-8 py-12 max-w-7xl mx-auto border-t border-brand-border/60">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Institutional Clearing Comparison</h2>
+        <p class="text-xs sm:text-sm text-slate-400 mt-2">How decentralized gross settlement compares against traditional correspondent banking.</p>
+      </div>
+
+      <div class="glass-card rounded-xl overflow-x-auto">
+        <table class="w-full text-left border-collapse min-w-[550px]">
+          <thead>
+            <tr class="border-b border-brand-border bg-brand-card/90 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <th class="py-3.5 px-4">Dimension</th>
+              <th class="py-3.5 px-4 text-rose-400">Legacy Banking Rails (SWIFT/ACH)</th>
+              <th class="py-3.5 px-4 text-emerald-400">Aura Ledger (Web3 Settlement)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-brand-border text-xs sm:text-sm">
+            <tr>
+              <td class="py-3.5 px-4 font-semibold text-slate-200">Settlement Horizon</td>
+              <td class="py-3.5 px-4 text-slate-400">T+2 to T+5 Business Days</td>
+              <td class="py-3.5 px-4 text-emerald-400 font-medium"><i class="fa-solid fa-check mr-1.5"></i>T+0 (Immediate Finality)</td>
+            </tr>
+            <tr>
+              <td class="py-3.5 px-4 font-semibold text-slate-200">Intermediary Costs</td>
+              <td class="py-3.5 px-4 text-slate-400">1.5% - 4.0% per wire + FX markups</td>
+              <td class="py-3.5 px-4 text-emerald-400 font-medium"><i class="fa-solid fa-check mr-1.5"></i>Negligible network gas fee (&lt; $0.05)</td>
+            </tr>
+            <tr>
+              <td class="py-3.5 px-4 font-semibold text-slate-200">Operating Windows</td>
+              <td class="py-3.5 px-4 text-slate-400">Strict banking hours (Mon-Fri)</td>
+              <td class="py-3.5 px-4 text-emerald-400 font-medium"><i class="fa-solid fa-check mr-1.5"></i>24/7/365 Continuous Execution</td>
+            </tr>
+            <tr>
+              <td class="py-3.5 px-4 font-semibold text-slate-200">Audit & Visibility</td>
+              <td class="py-3.5 px-4 text-slate-400">Delayed end-of-month statements</td>
+              <td class="py-3.5 px-4 text-emerald-400 font-medium"><i class="fa-solid fa-check mr-1.5"></i>Real-time on-chain cryptographic proof</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================== FRICTION CALCULATOR ==================== -->
+    <section id="calculator" class="px-4 sm:px-6 lg:px-8 py-12 max-w-7xl mx-auto border-t border-brand-border/60">
+      <div class="glass-card p-6 sm:p-8 rounded-2xl max-w-3xl mx-auto">
+        <div class="text-center mb-6">
+          <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Settlement Efficiency Calculator</h2>
+          <p class="text-xs sm:text-sm text-slate-400 mt-1">Estimate capital freed and fees saved per transaction volume.</p>
+        </div>
+
+        <div class="space-y-6">
+          <!-- Slider Control -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-xs sm:text-sm font-semibold text-slate-300">Transaction Principal:</label>
+              <span id="dealDisplay" class="text-base sm:text-lg font-bold text-sky-400 font-mono">$100,000</span>
+            </div>
+            <input id="dealSlider" type="range" min="10000" max="1000000" step="10000" value="100000" class="w-full cursor-pointer" oninput="updateCalculator(this.value)" />
+            <div class="flex justify-between text-[11px] text-slate-400 mt-1">
+              <span>$10,000</span>
+              <span>$500,000</span>
+              <span>$1,000,000</span>
+            </div>
+          </div>
+
+          <!-- Computed Metric Comparison Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            
+            <!-- Traditional Cost -->
+            <div class="p-4 rounded-xl border border-rose-900/40 bg-rose-950/20">
+              <span class="text-xs text-rose-400 font-semibold uppercase tracking-wider block mb-1">Traditional Banking Latency</span>
+              <p id="legacyFee" class="text-xl font-bold text-rose-300 font-mono">$2,500</p>
+              <p class="text-[12px] text-slate-400 mt-1">Direct wire fees &amp; correspondent haircut (est. 2.5%)</p>
+              <p class="text-[11px] text-rose-400 mt-2 font-medium"><i class="fa-solid fa-hourglass-half mr-1"></i> Capital locked for 48 hours</p>
+            </div>
+
+            <!-- Web3 Cost -->
+            <div class="p-4 rounded-xl border border-emerald-900/40 bg-emerald-950/20">
+              <span class="text-xs text-emerald-400 font-semibold uppercase tracking-wider block mb-1">Aura Ledger Finality</span>
+              <p id="web3Fee" class="text-xl font-bold text-emerald-300 font-mono">$0.04</p>
+              <p class="text-[12px] text-slate-400 mt-1">Algorithmic network validation gas cost</p>
+              <p class="text-[11px] text-emerald-400 mt-2 font-medium"><i class="fa-solid fa-bolt mr-1"></i> 0 seconds settlement friction</p>
+            </div>
+
+          </div>
+
+          <!-- Total Capital Efficiency Pill -->
+          <div class="p-3 bg-brand-card border border-brand-border rounded-lg text-center">
+            <span class="text-xs text-slate-400">Net Capital Retained on Balance Sheet: </span>
+            <span id="savingsDisplay" class="text-sm font-bold text-emerald-400 font-mono ml-1">$2,499.96</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== EXECUTIVE FAQ ==================== -->
+    <section id="faq" class="px-4 sm:px-6 lg:px-8 py-12 max-w-4xl mx-auto border-t border-brand-border/60">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Institutional Due Diligence FAQ</h2>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">Straightforward answers addressing institutional compliance and risk.</p>
+      </div>
+
+      <div class="space-y-3">
+        
+        <!-- Accordion 1 -->
+        <div class="border border-brand-border rounded-xl bg-brand-card overflow-hidden">
+          <button onclick="toggleFaq(1)" class="w-full text-left px-5 py-4 flex items-center justify-between text-sm sm:text-base font-semibold text-slate-200">
+            <span>Are treasury holdings exposed to crypto price volatility?</span>
+            <i id="faqIcon1" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+          </button>
+          <div id="faqAnswer1" class="hidden px-5 pb-4 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-brand-border/40 pt-3">
+            No. Institutional enterprise clearing relies on tokenized sovereign assets (like regulated stablecoins and tokenized US Treasury bills) pegged 1:1 with fiat currency, completely isolating your organization from cryptocurrency volatility.
+          </div>
+        </div>
+
+        <!-- Accordion 2 -->
+        <div class="border border-brand-border rounded-xl bg-brand-card overflow-hidden">
+          <button onclick="toggleFaq(2)" class="w-full text-left px-5 py-4 flex items-center justify-between text-sm sm:text-base font-semibold text-slate-200">
+            <span>How does this adhere to KYC/AML compliance regulations?</span>
+            <i id="faqIcon2" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+          </button>
+          <div id="faqAnswer2" class="hidden px-5 pb-4 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-brand-border/40 pt-3">
+            Institutional smart contract rails utilize permissioned transfer standards (such as ERC-3643). Transactions can only execute between counterparties with verified, cryptographically attested KYC credentials.
+          </div>
+        </div>
+
+        <!-- Accordion 3 -->
+        <div class="border border-brand-border rounded-xl bg-brand-card overflow-hidden">
+          <button onclick="toggleFaq(3)" class="w-full text-left px-5 py-4 flex items-center justify-between text-sm sm:text-base font-semibold text-slate-200">
+            <span>What happens if an internal key is misplaced?</span>
+            <i id="faqIcon3" class="fa-solid fa-chevron-down text-xs text-slate-400 transition-transform"></i>
+          </button>
+          <div id="faqAnswer3" class="hidden px-5 pb-4 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-brand-border/40 pt-3">
+            Corporate accounts use Multi-Party Computation (MPC) and multi-signature safeguards (e.g., 3-of-5 executive sign-offs). No single individual holds a vulnerability point, and lost keys are recoverable via corporate governance consensus.
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="border-t border-brand-border bg-brand-dark/80 px-4 sm:px-6 lg:px-8 py-8 text-center text-xs text-slate-400">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <div class="w-5 h-5 rounded bg-sky-500 flex items-center justify-center text-[10px] text-slate-950 font-bold">
+          <i class="fa-solid fa-cube"></i>
+        </div>
+        <span class="font-bold text-slate-300">Aura Ledger Infrastructure</span>
+      </div>
+      <p>&copy; 2026 Aura Ledger Protocol. Built for institutional capital efficiency.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== WALLET SELECTION MODAL ==================== -->
+  <div id="walletModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl max-w-sm w-full p-6 relative border border-brand-border shadow-2xl">
+      
+      <!-- Close Button -->
+      <button onclick="closeWalletModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <h3 class="text-lg font-bold text-white mb-1">Select Web3 Provider</h3>
+      <p class="text-xs text-slate-400 mb-5">Connect using an institutional wallet or exchange account.</p>
+
+      <!-- Provider Options -->
+      <div class="space-y-3">
+        
+        <!-- MetaMask Option -->
+        <button onclick="connectMetaMask()" class="w-full flex items-center justify-between p-3.5 rounded-xl border border-brand-border bg-brand-dark hover:border-sky-400 hover:bg-slate-900/60 transition-all group">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg">
+              <i class="fa-brands fa-ethereum"></i>
+            </div>
+            <div class="text-left">
+              <p class="text-sm font-semibold text-white group-hover:text-sky-400">MetaMask</p>
+              <p class="text-[11px] text-slate-400">EIP-1193 Injected Browser Provider</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-white"></i>
+        </button>
+
+        <!-- CoinDCX / Okto Option -->
+        <button onclick="connectCoinDCX()" class="w-full flex items-center justify-between p-3.5 rounded-xl border border-brand-border bg-brand-dark hover:border-blue-500 hover:bg-slate-900/60 transition-all group">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center text-lg font-bold">
+              <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
+            <div class="text-left">
+              <p class="text-sm font-semibold text-white group-hover:text-blue-400">CoinDCX / Okto</p>
+              <p class="text-[11px] text-slate-400">App Link / Embedded Web3 Wallet</p>
+            </div>
+          </div>
+          <i class="fa-solid fa-chevron-right text-xs text-slate-400 group-hover:text-white"></i>
+        </button>
+
+      </div>
+
+      <!-- Helper Notice -->
+      <p id="walletNotice" class="text-[11px] text-slate-400 text-center mt-4"></p>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+  <script>
+    // State
+    let connectedAddress = null;
+    let connectedProvider = null;
+
+    // Mobile Navigation Toggle
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobileDrawer');
+      const icon = document.getElementById('menuIcon');
+      drawer.classList.toggle('hidden');
+      if (drawer.classList.contains('hidden')) {
+        icon.classList.remove('fa-xmark');
+        icon.classList.add('fa-bars');
+      } else {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-xmark');
+      }
+    }
+
+    // Modal Controls
+    function openWalletModal() {
+      if (connectedAddress) {
+        disconnectWallet();
+        return;
+      }
+      document.getElementById('walletModal').classList.remove('hidden');
+    }
+
+    function closeWalletModal() {
+      document.getElementById('walletModal').classList.add('hidden');
+      document.getElementById('walletNotice').innerText = '';
+    }
+
+    // Truncate Crypto Address
+    function formatAddress(addr) {
+      if (!addr) return '';
+      return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`;
+    }
+
+    // Update Connected UI State
+    function setConnectedUI(address, providerName, ethBalance = '0.00') {
+      connectedAddress = address;
+      connectedProvider = providerName;
+      const btn = document.getElementById('connectWalletBtn');
+      const btnText = document.getElementById('walletBtnText');
+      
+      btnText.innerText = `${providerName}: ${formatAddress(address)} (${ethBalance} ETH)`;
+      btn.classList.remove('bg-sky-500', 'text-slate-950');
+      btn.classList.add('bg-emerald-500/20', 'border', 'border-emerald-500/40', 'text-emerald-400');
+      closeWalletModal();
+    }
+
+    // Disconnect Wallet
+    function disconnectWallet() {
+      connectedAddress = null;
+      connectedProvider = null;
+      const btn = document.getElementById('connectWalletBtn');
+      const btnText = document.getElementById('walletBtnText');
+      
+      btnText.innerText = 'Connect Wallet';
+      btn.classList.remove('bg-emerald-500/20', 'border', 'border-emerald-500/40', 'text-emerald-400');
+      btn.classList.add('bg-sky-500', 'text-slate-950');
+    }
+
+    // ==================== REAL WALLET 1: METAMASK ====================
+    async function connectMetaMask() {
+      const notice = document.getElementById('walletNotice');
+      
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          notice.innerText = 'Requesting account authorization from MetaMask...';
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          
+          if (accounts.length > 0) {
+            const address = accounts[0];
+            let ethBal = '0.00';
+            
+            try {
+              const balanceHex = await window.ethereum.request({
+                method: 'eth_getBalance',
+                params: [address, 'latest']
+              });
+              const wei = parseInt(balanceHex, 16);
+              ethBal = (wei / 1e18).toFixed(3);
+            } catch (err) {
+              console.warn('Balance query skipped:', err);
+            }
+
+            setConnectedUI(address, 'MetaMask', ethBal);
+          }
+        } catch (error) {
+          console.error(error);
+          notice.innerText = error.message || 'Connection request rejected.';
+        }
+      } else {
+        notice.innerHTML = `<span class="text-rose-400">MetaMask not detected.</span> Please install the <a href="https://metamask.io/download/" target="_blank" class="text-sky-400 underline">MetaMask Extension</a> or open in the MetaMask Mobile App.`;
+      }
+    }
+
+    // ==================== REAL WALLET 2: COINDCX / OKTO ====================
+    async function connectCoinDCX() {
+      const notice = document.getElementById('walletNotice');
+
+      // 1. Check if Okto Web3 injected provider is present in window
+      if (window.okto || (window.ethereum && window.ethereum.isOkto)) {
+        try {
+          notice.innerText = 'Connecting to CoinDCX Okto Provider...';
+          const provider = window.okto || window.ethereum;
+          const accounts = await provider.request({ method: 'eth_requestAccounts' });
+          if (accounts && accounts.length > 0) {
+            setConnectedUI(accounts[0], 'CoinDCX (Okto)', '0.00');
+            return;
+          }
+        } catch (err) {
+          console.error('Okto connection error:', err);
+        }
+      }
+
+      // 2. Check if general ethereum provider identifies as CoinDCX or user is in mobile CoinDCX app browser
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const isCoinDCXApp = /CoinDCX/i.test(userAgent) || /Okto/i.test(userAgent);
+
+      if (isCoinDCXApp && typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          if (accounts.length > 0) {
+            setConnectedUI(accounts[0], 'CoinDCX Web3', '0.00');
+            return;
+          }
+        } catch (e) {
+          notice.innerText = 'CoinDCX internal connection declined.';
+          return;
+        }
+      }
+
+      // 3. Fallback: Prompt user to open via CoinDCX app or Okto protocol
+      notice.innerHTML = `
+        <span class="text-sky-400 font-semibold">CoinDCX Web3 Integration:</span><br/>
+        Open this URL inside the <a href="https://coindcx.com/okto" target="_blank" class="text-blue-400 underline font-medium">CoinDCX / Okto Web3 Browser</a> to establish direct account verification.
+      `;
+    }
+
+    // Listen to account changes if provider is active
+    if (typeof window.ethereum !== 'undefined') {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        if (accounts.length === 0) {
+          disconnectWallet();
+        } else if (connectedAddress) {
+          setConnectedUI(accounts[0], connectedProvider || 'Web3');
+        }
+      });
+    }
+
+    // ==================== SETTLEMENT CALCULATOR LOGIC ====================
+    function updateCalculator(val) {
+      const principal = parseFloat(val);
+      document.getElementById('dealDisplay').innerText = `$${principal.toLocaleString()}`;
+      
+      // Traditional 2.5% fee
+      const legacy = principal * 0.025;
+      document.getElementById('legacyFee').innerText = `$${legacy.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      
+      // Constant Layer 2 / Web3 Gas
+      const web3 = 0.04;
+      document.getElementById('web3Fee').innerText = `$${web3.toFixed(2)}`;
+      
+      // Net Savings
+      const savings = legacy - web3;
+      document.getElementById('savingsDisplay').innerText = `$${savings.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    }
+
+    // ==================== FAQ ACCORDION ====================
+    function toggleFaq(index) {
+      const ans = document.getElementById(`faqAnswer${index}`);
+      const icon = document.getElementById(`faqIcon${index}`);
+      
+      ans.classList.toggle('hidden');
+      icon.classList.toggle('rotate-180');
+    }
+
+    // ==================== P2P MESH CANVAS SIMULATION ====================
+    const canvas = document.getElementById('meshCanvas');
+    const ctx = canvas.getContext('2d');
+    let nodes = [];
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight || 220;
+      initNodes();
+    }
+
+    function initNodes() {
+      nodes = [];
+      const nodeCount = Math.floor(canvas.width / 40);
+      for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.8,
+          vy: (Math.random() - 0.5) * 0.8,
+          radius: Math.random() * 2 + 2,
+          settledWave: 0
+        });
+      }
+    }
+
+    function animateMesh() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        n.x += n.vx;
+        n.y += n.vy;
+
+        if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+        if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+
+        // Draw node
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
+        ctx.fillStyle = n.settledWave > 0 ? '#10b981' : '#38bdf8';
+        ctx.fill();
+
+        // Draw settlement wave on click/tap
+        if (n.settledWave > 0) {
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.settledWave, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(16, 185, 129, ${1 - n.settledWave / 30})`;
+          ctx.stroke();
+          n.settledWave += 1.5;
+          if (n.settledWave > 30) n.settledWave = 0;
+        }
+
+        // Connect nearby nodes
+        for (let j = i + 1; j < nodes.length; j++) {
+          const n2 = nodes[j];
+          const dist = Math.hypot(n.x - n2.x, n.y - n2.y);
+          if (dist < 85) {
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(n2.x, n2.y);
+            ctx.strokeStyle = `rgba(56, 189, 248, ${0.25 * (1 - dist / 85)})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateMesh);
+    }
+
+    // Trigger atomic settlement ripple on tap or click
+    function triggerWave(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = (e.clientX || (e.touches && e.touches[0].clientX)) - rect.left;
+      const clickY = (e.clientY || (e.touches && e.touches[0].clientY)) - rect.top;
+
+      nodes.forEach(n => {
+        if (Math.hypot(n.x - clickX, n.y - clickY) < 100) {
+          n.settledWave = 1;
+        }
+      });
+    }
+
+    canvas.addEventListener('click', triggerWave);
+    canvas.addEventListener('touchstart', triggerWave, { passive: true });
+    window.addEventListener('resize', resizeCanvas);
+
+    // Initial load
+    window.onload = () => {
+      resizeCanvas();
+      animateMesh();
+      updateCalculator(100000);
+    };
+  </script>
+</body>
+</html>
